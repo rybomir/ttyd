@@ -3,6 +3,12 @@ name: release
 on:
   push:
     tags: ["*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to build
+        required: true
+        type: string
 
 jobs:
   build:
@@ -13,6 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
+          ref: ${{ inputs.tag || github.ref }}
           fetch-depth: 0
       - name: Generate release notes
         run: |
@@ -39,7 +46,8 @@ jobs:
           pushd build; sha256sum ttyd.* > SHA256SUMS; popd
       - uses: ncipollo/release-action@v1
         with:
+          tag: ${{ inputs.tag || github.ref_name }}
           artifacts: build/*
           bodyFile: release-notes.md
           allowUpdates: true
-          draft: true
+          draft: false
