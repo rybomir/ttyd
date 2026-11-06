@@ -14,6 +14,10 @@ on:
     - "src/*"
     - "scripts/*"
   workflow_call:
+    inputs:
+      ref:
+        required: false
+        type: string
 
 jobs:
   msvc:
@@ -25,6 +29,8 @@ jobs:
       TOOLCHAIN_FILE: ${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.ref }}
       - name: Checkout vcpkg
         uses: actions/checkout@v6
         with:
@@ -56,6 +62,8 @@ jobs:
         target: [i686, x86_64, arm, armhf, aarch64, mips, mipsel, mips64, mips64el, ppc64, ppc64le, s390x, win32]
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.ref }}
       - name: Install packages
         run: |
           sudo apt-get update

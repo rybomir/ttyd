@@ -13,6 +13,8 @@ on:
 jobs:
   build:
     uses: ./.github/workflows/backend.yml
+    with:
+      ref: ${{ inputs.tag || github.ref }}
   publish:
     needs: [build]
     runs-on: ubuntu-24.04
